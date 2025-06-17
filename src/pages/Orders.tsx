@@ -128,10 +128,13 @@ export default function Orders() {
   };
 
   return (
-    <div className="min-h-screen pb-20 md:pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        {/* Header */}
-        <div className="mb-8">
+    <div
+      className="flex flex-col w-full"
+      style={{ height: "calc(100dvh - 64px - 74px)" }}
+    >
+      <div className="max-w-7xl mx-auto px-4 pb-6 sm:px-6 lg:px-8 pt-8 flex flex-col h-full">
+        {/* Header (content-dependent height) */}
+        <div className="mb-8 flex-shrink-0">
           <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 bg-clip-text text-transparent select-none tracking-tight drop-shadow-lg">
             Trading Orders
           </h1>
@@ -153,9 +156,9 @@ export default function Orders() {
           </div>
         </div>
 
-        {/* Orders List */}
+        {/* Orders List (fills remaining space, min-h-[400px], scrollable) */}
         <div
-          className={`rounded-2xl overflow-hidden border ${
+          className={`flex-1 rounded-2xl border overflow-y-auto ${
             state.theme === "dark"
               ? "bg-gray-800/30 border-pink-500/20"
               : "bg-white/70 border-pink-200"
@@ -163,7 +166,7 @@ export default function Orders() {
         >
           {/* Table Header */}
           <div
-            className={`px-6 py-4 border-b ${
+            className={`px-6 py-4 border-b sticky top-0 z-10 ${
               state.theme === "dark"
                 ? "bg-gray-800/50 border-gray-700"
                 : "bg-gray-50 border-gray-200"
@@ -216,7 +219,7 @@ export default function Orders() {
           </div>
 
           {/* Table Body */}
-          <div className="max-h-[600px] overflow-y-auto">
+          <div>
             {displayOrders.map((order, index) => (
               <div
                 key={order.id}

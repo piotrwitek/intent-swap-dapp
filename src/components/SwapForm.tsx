@@ -83,7 +83,28 @@ export default function SwapForm() {
                 state.theme === "dark" ? "text-white" : "text-gray-900"
               }`}
             >
-              Swap
+              {/* Order Type Dropdown */}
+              <div className="flex items-center space-x-3">
+                <select
+                  value={state.orderType}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "SET_ORDER_TYPE",
+                      payload: e.target.value as "swap" | "limit",
+                    })
+                  }
+                  className={`bg-transparent border-none text-xl font-bold focus:outline-none cursor-pointer transition-colors rounded-lg px-2 py-1
+                  ${
+                    state.theme === "dark"
+                      ? "text-pink-400 hover:bg-purple-900/40"
+                      : "text-purple-700 hover:bg-purple-100"
+                  }`}
+                  aria-label="Order type"
+                >
+                  <option value="swap">Swap</option>
+                  <option value="limit">Limit</option>
+                </select>
+              </div>
             </h2>
           </div>
           <button

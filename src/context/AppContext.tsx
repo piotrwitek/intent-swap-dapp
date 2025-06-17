@@ -18,18 +18,21 @@ export interface SwapOrder {
 interface AppState {
   orders: SwapOrder[];
   theme: "light" | "dark";
+  orderType: "swap" | "limit";
 }
 
 type AppAction =
   | { type: "ADD_ORDER"; payload: SwapOrder }
   | { type: "CANCEL_ORDER"; payload: string }
   | { type: "TOGGLE_THEME" }
+  | { type: "SET_ORDER_TYPE"; payload: "swap" | "limit" }
   | { type: "LOAD_MORE_ORDERS"; payload: SwapOrder[] };
 
 // Initial state
 const initialState: AppState = {
   orders: [],
   theme: "dark",
+  orderType: "swap",
 };
 
 // Reducer
@@ -53,6 +56,11 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         theme: state.theme === "light" ? "dark" : "light",
+      };
+    case "SET_ORDER_TYPE":
+      return {
+        ...state,
+        orderType: action.payload,
       };
     case "LOAD_MORE_ORDERS":
       return {

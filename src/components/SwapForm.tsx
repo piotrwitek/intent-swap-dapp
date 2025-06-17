@@ -140,22 +140,49 @@ export default function SwapForm() {
                 >
                   Slippage Tolerance
                 </label>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 items-center">
                   {["Auto", "0.1", "0.5", "1.0"].map((value) => (
                     <button
                       key={value}
                       onClick={() => setSlippageGlobal(value)}
                       className={`px-3 py-1 rounded-lg text-sm transition-colors ${
                         slippage === value
-                          ? "bg-purple-500 text-white"
+                          ? "bg-[var(--color-primary-pink)] text-white"
                           : state.theme === "dark"
                           ? "bg-gray-600 text-gray-300 hover:bg-gray-500"
                           : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                       }`}
                     >
-                      {value === "Auto" ? value : `${value}%`}
+                      {value === "Auto" ? value : `${value}`}
                     </button>
                   ))}
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="Custom"
+                    value={
+                      !["Auto", "0.1", "0.5", "1.0"].includes(slippage) &&
+                      slippage !== ""
+                        ? slippage
+                        : ""
+                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSlippageGlobal(val);
+                    }}
+                    className={`w-20 px-3 py-1 rounded-lg text-sm border-none focus:outline-none transition-colors text-right appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+                      ${
+                        state.theme === "dark"
+                          ? "bg-gray-600 text-gray-100 placeholder-gray-400 focus:bg-gray-500"
+                          : "bg-gray-200 text-gray-700 placeholder-gray-400 focus:bg-gray-300"
+                      }
+                    `}
+                    style={
+                      { MozAppearance: "textfield" } as React.CSSProperties
+                    }
+                    onWheel={(e) => e.currentTarget.blur()}
+                  />
                 </div>
               </div>
             </div>
@@ -210,11 +237,15 @@ export default function SwapForm() {
               value={fromAmount}
               onChange={(e) => handleFromAmountChange(e.target.value)}
               placeholder="0.0"
-              className={`flex-1 bg-transparent text-xl font-semibold text-right focus:outline-none ${
-                state.theme === "dark"
-                  ? "text-white placeholder-gray-500"
-                  : "text-gray-900 placeholder-gray-400"
-              }`}
+              className={`flex-1 bg-transparent text-xl font-semibold text-right focus:outline-none appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+                ${
+                  state.theme === "dark"
+                    ? "text-white placeholder-gray-500"
+                    : "text-gray-900 placeholder-gray-400"
+                }
+              `}
+              style={{ MozAppearance: "textfield" } as React.CSSProperties}
+              onWheel={(e) => e.currentTarget.blur()}
             />
           </div>
         </div>
@@ -223,10 +254,10 @@ export default function SwapForm() {
         <div className="flex justify-center -my-3 z-10 relative">
           <button
             onClick={swapTokens}
-            className={`p-2 rounded-full border-4 transition-all hover:scale-110 ${
+            className={`p-2 rounded-xl border-1 transition-all hover:scale-110 ${
               state.theme === "dark"
-                ? "bg-gray-800 border-gray-700 text-purple-400 hover:border-purple-500"
-                : "bg-white border-gray-200 text-purple-600 hover:border-purple-300"
+                ? "bg-gray-700/50 border-gray-600 text-[var(--color-primary-pink)] hover:border-[var(--color-primary-pink)]"
+                : "bg-white border-gray-200 text-[var(--color-primary-pink)] hover:border-[var(--color-primary-pink)]"
             }`}
           >
             <ArrowDownUp className="w-5 h-5" />

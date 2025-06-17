@@ -50,3 +50,7 @@ This is a React + TypeScript trading widget application with a cyber / futuristi
 - Include digital elements in key interactions
 - Cyberpunk + financial trading aesthetic
 - Playful but professional tone in copy text
+
+## Numeric Input Handling
+
+- For all numeric text inputs, do not use min, max, or step attributes unless native HTML validation is required. Use JS validation instead.

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowDownUp, Settings, Sun, TrendingUp } from "lucide-react";
+import { ArrowDownUp, Settings } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import type { SwapOrder } from "../context/AppContext";
 
@@ -19,6 +19,9 @@ export default function SwapForm() {
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
   const [showSettings, setShowSettings] = useState(false);
+
+  // Decimal precision for 'from' input
+  const [fromDecimals, setFromDecimals] = useState(6);
 
   // Use global slippage from context
   const slippage = state.slippage;
@@ -138,7 +141,7 @@ export default function SwapForm() {
                     state.theme === "dark" ? "text-gray-300" : "text-gray-700"
                   }`}
                 >
-                  Slippage Tolerance
+                  Slippage Tolerance %
                 </label>
                 <div className="flex space-x-2 items-center">
                   {["Auto", "0.1", "0.5", "1.0"].map((value) => (
@@ -156,10 +159,10 @@ export default function SwapForm() {
                       {value === "Auto" ? value : `${value}`}
                     </button>
                   ))}
+                  {/* Custom Slippage Input */}
                   <input
-                    type="number"
-                    min="0"
-                    max="100"
+                    type="text"
+                    inputMode="decimal"
                     placeholder="Custom"
                     value={
                       !["Auto", "0.1", "0.5", "1.0"].includes(slippage) &&
@@ -168,20 +171,33 @@ export default function SwapForm() {
                         : ""
                     }
                     onChange={(e) => {
-                      const val = e.target.value;
-                      setSlippageGlobal(val);
+                      let val = e.target.value;
+                      // Only allow numbers and at most one dot
+                      if (!/^\d*\.?\d*$/.test(val)) return;
+                      // Prevent more than 2 decimals
+                      if (val.includes(".")) {
+                        const [intPart, decPart] = val.split(".");
+                        if (decPart && decPart.length > 2) {
+                          val = intPart + "." + decPart.slice(0, 2);
+                        }
+                      }
+                      // Only allow 0-100
+                      if (
+                        val === "" ||
+                        (!isNaN(Number(val)) &&
+                          Number(val) >= 0 &&
+                          Number(val) <= 100)
+                      ) {
+                        setSlippageGlobal(val);
+                      }
                     }}
-                    className={`w-20 px-3 py-1 rounded-lg text-sm border-none focus:outline-none transition-colors text-right appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+                    className={`w-20 px-3 py-1 rounded-lg text-sm border-none focus:outline-none transition-colors text-right
                       ${
                         state.theme === "dark"
                           ? "bg-gray-600 text-gray-100 placeholder-gray-400 focus:bg-gray-500"
                           : "bg-gray-200 text-gray-700 placeholder-gray-400 focus:bg-gray-300"
                       }
                     `}
-                    style={
-                      { MozAppearance: "textfield" } as React.CSSProperties
-                    }
-                    onWheel={(e) => e.currentTarget.blur()}
                   />
                 </div>
               </div>
@@ -206,7 +222,6 @@ export default function SwapForm() {
               From
             </span>
             <div className="flex items-center space-x-1">
-              <Sun className="w-4 h-4 text-yellow-500" />
               <span
                 className={`text-sm ${
                   state.theme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -233,9 +248,26 @@ export default function SwapForm() {
             </select>
 
             <input
-              type="number"
+              type="text"
               value={fromAmount}
-              onChange={(e) => handleFromAmountChange(e.target.value)}
+              onChange={(e) => {
+                let val = e.target.value;
+                // Prevent more than fromDecimals decimals
+                if (val.includes(".")) {
+                  const [intPart, decPart] = val.split(".");
+                  if (decPart && decPart.length > fromDecimals) {
+                    val = intPart + "." + decPart.slice(0, fromDecimals);
+                  }
+                }
+                // Allow input to start with '.' by prepending '0'
+                if (val.startsWith(".")) {
+                  val = "0" + val;
+                }
+                // Prevent less than zero
+                if (val === "" || (!isNaN(Number(val)) && Number(val) >= 0)) {
+                  handleFromAmountChange(val);
+                }
+              }}
               placeholder="0.0"
               className={`flex-1 bg-transparent text-xl font-semibold text-right focus:outline-none appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                 ${
@@ -244,8 +276,6 @@ export default function SwapForm() {
                     : "text-gray-900 placeholder-gray-400"
                 }
               `}
-              style={{ MozAppearance: "textfield" } as React.CSSProperties}
-              onWheel={(e) => e.currentTarget.blur()}
             />
           </div>
         </div>
@@ -281,7 +311,6 @@ export default function SwapForm() {
               To
             </span>
             <div className="flex items-center space-x-1">
-              <TrendingUp className="w-4 h-4 text-green-500" />
               <span
                 className={`text-sm ${
                   state.theme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -308,7 +337,7 @@ export default function SwapForm() {
             </select>
 
             <input
-              type="number"
+              type="text"
               value={toAmount}
               readOnly
               placeholder="0.0"

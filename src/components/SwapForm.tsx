@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowDownUp, Settings } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import type { SwapOrder } from "../context/AppContext";
+import { formatNumberDisplay } from "../utils/formatting";
 
 const POPULAR_TOKENS = [
   { symbol: "ETH", name: "Ethereum", icon: "⟠" },
@@ -20,8 +21,9 @@ export default function SwapForm() {
   const [toAmount, setToAmount] = useState("");
   const [showSettings, setShowSettings] = useState(false);
 
-  // Decimal precision for 'from' input
-  const [fromDecimals, setFromDecimals] = useState(6);
+  // Decimal precision for inputs
+  const [fromDecimals, setFromDecimals] = useState(18);
+  const [toDecimals, setToDecimals] = useState(18);
 
   // Use global slippage from context
   const slippage = state.slippage;
@@ -33,7 +35,8 @@ export default function SwapForm() {
     if (!amount || isNaN(Number(amount))) return "";
     const rate = fromToken === "ETH" ? 2400 : fromToken === "BTC" ? 42000 : 1;
     const toRate = toToken === "ETH" ? 2400 : toToken === "BTC" ? 42000 : 1;
-    return ((Number(amount) * rate) / toRate).toFixed(6);
+    // Use toFixed for precision, then remove trailing zeros and dot if needed
+    return ((Number(amount) * rate) / toRate).toString();
   };
 
   const handleFromAmountChange = (value: string) => {
@@ -62,7 +65,7 @@ export default function SwapForm() {
       status: "pending",
       timestamp: new Date(),
       slippage,
-      fee: (Number(fromAmount) * 0.003).toFixed(6), // 0.3% fee
+      fee: (Number(fromAmount) * 0.003).toString(), // 0.3% fee
     };
 
     dispatch({ type: "ADD_ORDER", payload: newOrder });
@@ -249,6 +252,7 @@ export default function SwapForm() {
 
             <input
               type="text"
+              name="fromAmount"
               value={fromAmount}
               onChange={(e) => {
                 let val = e.target.value;
@@ -338,7 +342,8 @@ export default function SwapForm() {
 
             <input
               type="text"
-              value={toAmount}
+              name="toAmount"
+              value={formatNumberDisplay(toAmount, 6)}
               readOnly
               placeholder="0.0"
               className={`flex-1 bg-transparent text-xl font-semibold text-right focus:outline-none ${
@@ -371,7 +376,8 @@ export default function SwapForm() {
                 }
               >
                 1 {fromToken} ={" "}
-                {(Number(toAmount) / Number(fromAmount)).toFixed(6)} {toToken}
+                {formatNumberDisplay(Number(toAmount) / Number(fromAmount))}{" "}
+                {toToken}
               </span>
             </div>
             <div className="flex justify-between text-sm mt-1">
@@ -380,14 +386,30 @@ export default function SwapForm() {
                   state.theme === "dark" ? "text-gray-400" : "text-gray-600"
                 }
               >
-                Fee (0.3%)
+                Fee
               </span>
               <span
                 className={
                   state.theme === "dark" ? "text-white" : "text-gray-900"
                 }
               >
-                {(Number(fromAmount) * 0.003).toFixed(6)} {fromToken}
+                FREE
+              </span>
+            </div>
+            <div className="flex justify-between text-sm mt-1">
+              <span
+                className={
+                  state.theme === "dark" ? "text-gray-400" : "text-gray-600"
+                }
+              >
+                Network costs (est.)
+              </span>
+              <span
+                className={
+                  state.theme === "dark" ? "text-white" : "text-gray-900"
+                }
+              >
+                {formatNumberDisplay(Number(fromAmount) * 0.001)} {fromToken}
               </span>
             </div>
           </div>

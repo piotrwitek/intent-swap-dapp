@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { TrendingUp, TrendingDown, Eye, X, Clock } from "lucide-react";
+import { Eye, X, Clock, Check, ArrowRight } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import type { SwapOrder } from "../context/AppContext";
 
@@ -121,7 +121,7 @@ export default function Orders() {
       case "pending":
         return <Clock className="w-4 h-4" />;
       case "completed":
-        return <TrendingUp className="w-4 h-4" />;
+        return <Check className="w-4 h-4" />;
       case "cancelled":
         return <X className="w-4 h-4" />;
     }
@@ -172,7 +172,7 @@ export default function Orders() {
                 : "bg-gray-50 border-gray-200"
             }`}
           >
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm font-medium">
+            <div className="grid grid-cols-2 md:grid-cols-[1.4fr_1.3fr_1fr_1fr_0.8fr_0.7fr] gap-4 text-sm font-medium">
               <div
                 className={
                   state.theme === "dark" ? "text-gray-300" : "text-gray-700"
@@ -234,17 +234,10 @@ export default function Orders() {
                     : "border-gray-200 hover:bg-gray-50"
                 }`}
               >
-                <div className="grid grid-cols-2 md:grid-cols-6 gap-4 items-center">
+                <div className="grid grid-cols-2 md:grid-cols-[1.4fr_1.3fr_1fr_1fr_0.8fr_0.7fr] gap-4 items-center">
                   {/* Pair */}
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center space-x-1">
-                      <TrendingUp
-                        className={`w-4 h-4 ${
-                          state.theme === "dark"
-                            ? "text-green-400"
-                            : "text-green-600"
-                        }`}
-                      />
                       <span
                         className={`font-medium ${
                           state.theme === "dark"
@@ -255,7 +248,7 @@ export default function Orders() {
                         {order.fromToken}
                       </span>
                     </div>
-                    <TrendingDown
+                    <ArrowRight
                       className={`w-4 h-4 ${
                         state.theme === "dark"
                           ? "text-gray-400"
@@ -328,7 +321,7 @@ export default function Orders() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1">
                     <Link
                       to={`/orders/${order.id}`}
                       className={`p-2 rounded-lg transition-colors ${

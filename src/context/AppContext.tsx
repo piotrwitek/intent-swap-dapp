@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useContext, useReducer, useEffect } from "react";
 import type { ReactNode } from "react";
 
 // Types
@@ -19,6 +19,7 @@ interface AppState {
   orders: SwapOrder[];
   theme: "light" | "dark";
   orderType: "swap" | "limit";
+  slippage: string;
 }
 
 type AppAction =
@@ -26,13 +27,15 @@ type AppAction =
   | { type: "CANCEL_ORDER"; payload: string }
   | { type: "TOGGLE_THEME" }
   | { type: "SET_ORDER_TYPE"; payload: "swap" | "limit" }
-  | { type: "LOAD_MORE_ORDERS"; payload: SwapOrder[] };
+  | { type: "LOAD_MORE_ORDERS"; payload: SwapOrder[] }
+  | { type: "SET_SLIPPAGE"; payload: string };
 
 // Initial state
 const initialState: AppState = {
   orders: [],
   theme: "dark",
   orderType: "swap",
+  slippage: "Auto",
 };
 
 // Reducer
@@ -67,6 +70,11 @@ function appReducer(state: AppState, action: AppAction): AppState {
         ...state,
         orders: [...state.orders, ...action.payload],
       };
+    case "SET_SLIPPAGE":
+      return {
+        ...state,
+        slippage: action.payload,
+      };
     default:
       return state;
   }
@@ -80,7 +88,29 @@ const AppContext = createContext<{
 
 // Provider
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(appReducer, initialState);
+  // Load state from localStorage on mount
+  const [state, dispatch] = React.useReducer(appReducer, initialState, (init) => {
+    try {
+      const stored = localStorage.getItem("cyberswap-app-state");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        // Convert date strings back to Date objects for orders
+        if (parsed.orders) {
+          parsed.orders = parsed.orders.map((order: any) => ({
+            ...order,
+            timestamp: order.timestamp ? new Date(order.timestamp) : new Date(),
+          }));
+        }
+        return { ...init, ...parsed };
+      }
+    } catch {}
+    return init;
+  });
+
+  // Persist state to localStorage on change
+  React.useEffect(() => {
+    localStorage.setItem("cyberswap-app-state", JSON.stringify(state));
+  }, [state]);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

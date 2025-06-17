@@ -18,8 +18,12 @@ export default function SwapForm() {
   const [toToken, setToToken] = useState("USDC");
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
-  const [slippage, setSlippage] = useState("Auto");
   const [showSettings, setShowSettings] = useState(false);
+
+  // Use global slippage from context
+  const slippage = state.slippage;
+  const setSlippageGlobal = (value: string) =>
+    dispatch({ type: "SET_SLIPPAGE", payload: value });
 
   // Mock exchange rate calculation
   const calculateToAmount = (amount: string) => {
@@ -140,7 +144,7 @@ export default function SwapForm() {
                   {["Auto", "0.1", "0.5", "1.0"].map((value) => (
                     <button
                       key={value}
-                      onClick={() => setSlippage(value)}
+                      onClick={() => setSlippageGlobal(value)}
                       className={`px-3 py-1 rounded-lg text-sm transition-colors ${
                         slippage === value
                           ? "bg-purple-500 text-white"
@@ -339,7 +343,7 @@ export default function SwapForm() {
               : "bg-gray-400"
           }`}
         >
-          {fromAmount && toAmount ? "⚡ Execute Cyber Swap" : "Enter Amount"}
+          {fromAmount && toAmount ? "⚡ Execute Swap" : "Enter Amount"}
         </button>
       </div>
     </div>

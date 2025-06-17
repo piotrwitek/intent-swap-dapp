@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Moon, Sun, Home, List, Coins, Zap } from "lucide-react";
+import { Moon, Sun, Home, List, Zap } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -41,7 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <span
                   className={`text-xl font-bold bg-gradient-to-r from-purple-500 to-cyan-500 bg-clip-text text-transparent`}
                 >
-                  CyberSwap
+                  IntentSwap
                 </span>
               </div>
 
@@ -122,23 +122,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   state.theme === "dark" ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                © 2025 CyberSwap - Trade with Digital Honor ⚡
+                <b>© 2025 IntentSwap </b>
               </span>
             </div>
 
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
-                <Coins
-                  className={`w-4 h-4 ${
-                    state.theme === "dark" ? "text-cyan-400" : "text-cyan-600"
-                  }`}
-                />
                 <span
                   className={`text-sm ${
                     state.theme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
-                  Cyber Trading Era 🔮
+                  Trade with Magic Shield 🔮
                 </span>
               </div>
             </div>

@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* Custom CSS variables for our summer/trading theme */
+:root {
+  --font-family-primary: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  /* Summer/Trading theme colors */
+  --color-primary-pink: #ec4899;
+  --color-primary-dark: #1f2937;
+  --color-summer-sun: #fbbf24;
+  --color-summer-sky: #60a5fa;
+  --color-trading-green: #10b981;
+  --color-trading-red: #ef4444;
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-family-primary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Custom button styles to work with Tailwind */
+.btn-primary {
+  @apply bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+}
+
+.btn-secondary {
+  @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+}

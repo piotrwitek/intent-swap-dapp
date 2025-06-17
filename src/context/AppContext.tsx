@@ -89,27 +89,33 @@ const AppContext = createContext<{
 // Provider
 export function AppProvider({ children }: { children: ReactNode }) {
   // Load state from localStorage on mount
-  const [state, dispatch] = React.useReducer(appReducer, initialState, (init) => {
-    try {
-      const stored = localStorage.getItem("cyberswap-app-state");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        // Convert date strings back to Date objects for orders
-        if (parsed.orders) {
-          parsed.orders = parsed.orders.map((order: any) => ({
-            ...order,
-            timestamp: order.timestamp ? new Date(order.timestamp) : new Date(),
-          }));
+  const [state, dispatch] = React.useReducer(
+    appReducer,
+    initialState,
+    (init) => {
+      try {
+        const stored = localStorage.getItem("intentswap-app-state");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          // Convert date strings back to Date objects for orders
+          if (parsed.orders) {
+            parsed.orders = parsed.orders.map((order: any) => ({
+              ...order,
+              timestamp: order.timestamp
+                ? new Date(order.timestamp)
+                : new Date(),
+            }));
+          }
+          return { ...init, ...parsed };
         }
-        return { ...init, ...parsed };
-      }
-    } catch {}
-    return init;
-  });
+      } catch {}
+      return init;
+    }
+  );
 
   // Persist state to localStorage on change
   React.useEffect(() => {
-    localStorage.setItem("cyberswap-app-state", JSON.stringify(state));
+    localStorage.setItem("intentswap-app-state", JSON.stringify(state));
   }, [state]);
 
   return (

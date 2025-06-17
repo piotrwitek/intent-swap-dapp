@@ -100,34 +100,33 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1">{children}</main>
+      <div className="pb-16 md:pb-0">
+        {/* Main Content */}
+        <main className="flex-1">{children}</main>
 
-      {/* Bottom Footer */}
-      <footer
-        className={`border-t transition-colors ${
-          state.theme === "dark"
-            ? "bg-gray-900/50 border-purple-500/20"
-            : "bg-white/50 border-purple-200"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex items-center space-x-4">
-              <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-cyan-500 rounded flex items-center justify-center">
-                <Zap className="w-3 h-3 text-white" />
+        {/* Bottom Footer */}
+        <footer
+          className={`border-t transition-colors ${
+            state.theme === "dark"
+              ? "bg-gray-900/50 border-purple-500/20"
+              : "bg-white/50 border-purple-200"
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex w-full flex-row justify-between items-center">
+              <div className="flex items-center space-x-4">
+                <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-cyan-500 rounded flex items-center justify-center">
+                  <Zap className="w-3 h-3 text-white" />
+                </div>
+                <span
+                  className={`text-sm ${
+                    state.theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  <b>© 2025 IntentSwap </b>
+                </span>
               </div>
-              <span
-                className={`text-sm ${
-                  state.theme === "dark" ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
-                <b>© 2025 IntentSwap </b>
-              </span>
-            </div>
-
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-6">
                 <span
                   className={`text-sm ${
                     state.theme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -138,49 +137,49 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
 
-      {/* Mobile Navigation */}
-      <div
-        className={`md:hidden fixed bottom-0 left-0 right-0 border-t transition-colors ${
-          state.theme === "dark"
-            ? "bg-gray-900/95 border-purple-500/20"
-            : "bg-white/95 border-purple-200"
-        }`}
-      >
-        <div className="flex justify-around py-2">
-          <Link
-            to="/"
-            className={`flex flex-col items-center space-y-1 px-4 py-2 rounded-lg transition-colors ${
-              isActive("/")
-                ? state.theme === "dark"
-                  ? "text-purple-300"
-                  : "text-purple-700"
-                : state.theme === "dark"
-                ? "text-gray-400"
-                : "text-gray-600"
-            }`}
-          >
-            <Home className="w-5 h-5" />
-            <span className="text-xs">Swap</span>
-          </Link>
+        {/* Mobile Navigation */}
+        <div
+          className={`md:hidden fixed bottom-0 left-0 right-0 border-t transition-colors z-50 ${
+            state.theme === "dark"
+              ? "bg-gray-900/95 border-purple-500/20"
+              : "bg-white/95 border-purple-200"
+          }`}
+        >
+          <div className="flex justify-around py-2">
+            <Link
+              to="/"
+              className={`flex flex-col items-center space-y-1 px-4 py-2 rounded-lg transition-colors ${
+                isActive("/")
+                  ? state.theme === "dark"
+                    ? "text-purple-300"
+                    : "text-purple-700"
+                  : state.theme === "dark"
+                  ? "text-gray-400"
+                  : "text-gray-600"
+              }`}
+            >
+              <Home className="w-5 h-5" />
+              <span className="text-xs">Swap</span>
+            </Link>
 
-          <Link
-            to="/orders"
-            className={`flex flex-col items-center space-y-1 px-4 py-2 rounded-lg transition-colors ${
-              isActive("/orders")
-                ? state.theme === "dark"
-                  ? "text-purple-300"
-                  : "text-purple-700"
-                : state.theme === "dark"
-                ? "text-gray-400"
-                : "text-gray-600"
-            }`}
-          >
-            <List className="w-5 h-5" />
-            <span className="text-xs">Orders</span>
-          </Link>
+            <Link
+              to="/orders"
+              className={`flex flex-col items-center space-y-1 px-4 py-2 rounded-lg transition-colors ${
+                isActive("/orders")
+                  ? state.theme === "dark"
+                    ? "text-purple-300"
+                    : "text-purple-700"
+                  : state.theme === "dark"
+                  ? "text-gray-400"
+                  : "text-gray-600"
+              }`}
+            >
+              <List className="w-5 h-5" />
+              <span className="text-xs">Orders</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

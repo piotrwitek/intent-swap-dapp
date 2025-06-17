@@ -122,7 +122,6 @@ npm run dev
 src/
 ├── components/
 │   ├── Layout.tsx          # Main layout with navigation
-│   ├── SamuraiBot.tsx      # Animated mascot SVG
 │   └── SwapForm.tsx        # Token swap interface
 ├── pages/
 │   ├── Home.tsx            # Landing page with swap form

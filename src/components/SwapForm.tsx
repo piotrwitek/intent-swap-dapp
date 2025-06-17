@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ArrowDownUp, Settings, Sun, TrendingUp } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import type { SwapOrder } from "../context/AppContext";
-import SamuraiBot from "./SamuraiBot";
 
 const POPULAR_TOKENS = [
   { symbol: "ETH", name: "Ethereum", icon: "⟠" },

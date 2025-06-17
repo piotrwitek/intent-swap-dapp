@@ -1,5 +1,4 @@
 import SwapForm from "../components/SwapForm";
-import CyberSamurai from "../components/CyberSamurai";
 import { useApp } from "../context/AppContext";
 
 export default function Home() {
@@ -10,11 +9,6 @@ export default function Home() {
       {/* Cyber Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/30 to-cyan-900/20 backdrop-blur-3xl"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-500/10 to-transparent animate-pulse"></div>
-
-      {/* Cyber Samurai - Full width slice */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <CyberSamurai className="w-full h-64 opacity-30" />
-      </div>
 
       {/* Hero Section */}
       <div className="relative z-10 overflow-hidden">

@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${
+      className={`min-h-screen flex flex-col transition-colors duration-300 ${
         state.theme === "dark"
           ? "bg-gradient-to-br from-gray-900 via-purple-900/50 to-gray-900"
           : "bg-gradient-to-br from-purple-50 via-white to-cyan-50"
@@ -100,13 +100,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
       </header>
 
-      <div className="pb-16 md:pb-0">
+      <div className="flex-1 flex flex-col">
         {/* Main Content */}
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 flex flex-col">{children}</main>
 
         {/* Bottom Footer */}
         <footer
-          className={`border-t transition-colors ${
+          className={`border-t transition-colors mt-auto ${
             state.theme === "dark"
               ? "bg-gray-900/50 border-purple-500/20"
               : "bg-white/50 border-purple-200"

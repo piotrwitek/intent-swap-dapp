@@ -5,13 +5,14 @@ export default function Home() {
   const { state } = useApp();
 
   return (
-    <div className="min-h-screen pb-20 md:pb-8 relative overflow-hidden">
+    <div className="flex-1 flex flex-col min-h-[500px] relative overflow-hidden">
       {/* Cyber Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/30 to-cyan-900/20 backdrop-blur-3xl"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-500/10 to-transparent animate-pulse"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-500/10 to-transparent"></div>
 
-      {/* Hero Section */}
-      <div className="relative z-10 overflow-hidden">
+      {/* Main Content Scrollable Area */}
+      <div className="relative z-10 flex-1 flex flex-col overflow-auto min-h-[500px]">
+        {/* Hero Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
           <div className="text-center">
             <h1
@@ -34,11 +35,11 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </div>
 
-      {/* Main Swap Form - Centered */}
-      <div className="flex justify-center items-center w-full mt-4">
-        <SwapForm />
+        {/* Main Swap Form - Centered */}
+        <div className="flex justify-center items-center w-full mt-4 mb-8 flex-1">
+          <SwapForm />
+        </div>
       </div>
     </div>
   );

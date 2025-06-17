@@ -1,16 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import {
-  Calendar,
-  TrendingUp,
-  TrendingDown,
-  Eye,
-  X,
-  Clock,
-} from "lucide-react";
+import { TrendingUp, TrendingDown, Eye, X, Clock } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import type { SwapOrder } from "../context/AppContext";
-import SamuraiBot from "../components/SamuraiBot";
 
 // Mock data generator for infinite scroll
 const generateMockOrders = (startId: number, count: number): SwapOrder[] => {
@@ -139,37 +131,22 @@ export default function Orders() {
     <div className="min-h-screen pb-20 md:pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <SamuraiBot className="w-10 h-10" />
-            <div>
-              <h1
-                className={`text-3xl font-bold ${
-                  state.theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                Trading Orders ⚔️
-              </h1>
-              <p
-                className={`${
-                  state.theme === "dark" ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
-                Track your summer trading journey
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Calendar
-              className={`w-5 h-5 ${
-                state.theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            />
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 bg-clip-text text-transparent select-none tracking-tight drop-shadow-lg">
+            Trading Orders
+          </h1>
+          <p
+            className={`mt-1 ${
+              state.theme === "dark" ? "text-gray-400" : "text-gray-600"
+            }`}
+          >
+            Chart your intent-based trades across the digital frontier
+          </p>
+          <div className="mt-2 text-sm font-medium">
             <span
-              className={`text-sm ${
+              className={
                 state.theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
+              }
             >
               {displayOrders.length} total orders
             </span>
@@ -306,7 +283,7 @@ export default function Orders() {
                     <div
                       className={`text-xs ${
                         state.theme === "dark"
-                          ? "text-gray-500"
+                          ? "text-gray-300"
                           : "text-gray-500"
                       }`}
                     >
@@ -321,6 +298,7 @@ export default function Orders() {
                     }`}
                   >
                     {parseFloat(order.price).toFixed(4)}
+                    <br /> {order.fromToken}/{order.toToken}
                   </div>
 
                   {/* Status - Hidden on mobile */}
@@ -338,7 +316,7 @@ export default function Orders() {
                   {/* Time - Hidden on mobile */}
                   <div
                     className={`hidden md:block text-xs ${
-                      state.theme === "dark" ? "text-gray-500" : "text-gray-500"
+                      state.theme === "dark" ? "text-gray-300" : "text-gray-500"
                     }`}
                   >
                     {order.timestamp.toLocaleDateString()}
@@ -408,7 +386,6 @@ export default function Orders() {
             {loading && (
               <div className="px-6 py-8 text-center">
                 <div className="flex items-center justify-center space-x-2">
-                  <SamuraiBot className="w-8 h-8" animated />
                   <span
                     className={`text-sm ${
                       state.theme === "dark" ? "text-gray-400" : "text-gray-600"

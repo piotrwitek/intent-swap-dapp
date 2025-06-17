@@ -8,7 +8,6 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
-import SamuraiBot from "../components/SamuraiBot";
 
 export default function OrderDetails() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -22,7 +21,6 @@ export default function OrderDetails() {
     return (
       <div className="min-h-screen pb-20 md:pb-8 flex items-center justify-center">
         <div className="text-center">
-          <SamuraiBot className="w-24 h-24 mx-auto mb-4" />
           <h2
             className={`text-2xl font-bold mb-2 ${
               state.theme === "dark" ? "text-white" : "text-gray-900"
@@ -32,10 +30,11 @@ export default function OrderDetails() {
           </h2>
           <p
             className={`mb-6 ${
-              state.theme === "dark" ? "text-gray-400" : "text-gray-600"
+              state.theme === "dark" ? "text-gray-200" : "text-gray-600"
             }`}
           >
-            The samurai cannot find this order in the dojo.
+            This order has vanished into the blockchain ether — no bytes, no
+            blocks, just pure digital mystery.
           </p>
           <button
             onClick={() => navigate("/orders")}
@@ -123,7 +122,6 @@ export default function OrderDetails() {
           </button>
 
           <div className="flex items-center space-x-3">
-            <SamuraiBot className="w-10 h-10" />
             <div>
               <h1
                 className={`text-3xl font-bold ${
@@ -190,7 +188,7 @@ export default function OrderDetails() {
                   {order.status === "completed"
                     ? "Your tokens have been exchanged successfully"
                     : order.status === "pending"
-                    ? "Your swap is being processed by the samurai"
+                    ? "Your swap is being processed by solvers"
                     : "This swap order has been cancelled"}
                 </p>
               </div>
@@ -309,13 +307,12 @@ export default function OrderDetails() {
           </button>
         </div>
 
-        {/* Samurai Wisdom */}
+        {/* Intent Wisdom */}
         <div
           className={`mt-12 p-6 rounded-xl text-center ${
             state.theme === "dark" ? "bg-gray-800/20" : "bg-white/30"
           }`}
         >
-          <SamuraiBot className="w-16 h-16 mx-auto mb-4 opacity-70" />
           <p
             className={`text-lg font-medium italic ${
               state.theme === "dark" ? "text-gray-300" : "text-gray-700"
@@ -328,7 +325,7 @@ export default function OrderDetails() {
               state.theme === "dark" ? "text-gray-500" : "text-gray-500"
             }`}
           >
-            - Wise Samurai Trader 🏖️⚔️
+            - Wise Intent Trader 🏖️⚔️
           </p>
         </div>
       </div>

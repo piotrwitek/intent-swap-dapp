@@ -1,33 +1,32 @@
-# SamuraiSwap - Trading Widget 🏖️⚔️
+# IntentSwap - Cyber Trading Widget
 
-A modern React + TypeScript trading widget application with a summer vacation and trading/finance theme, featuring a charming samurai bot mascot.
+A modern React + TypeScript trading widget with a cyber/futuristic theme and digital realm honor code.
 
 ## 🌟 Features
 
 ### Core Functionality
 
-- **Token Swap Form**: Intuitive interface for swapping tokens with real-time price calculation
-- **Orders Management**: Comprehensive list view with infinite scroll and status tracking
-- **Order Details**: Detailed transaction information and history
-- **Dark/Light Mode**: Seamless theme switching with persistent preferences
+- **Swap Form**: Token selection, amount input, slippage settings, order type selection
+- **Orders List**: Infinite scroll, status filtering, action buttons
+- **Order Details**: Detailed view with transaction information
+- **Theme Toggle**: Persistent dark/light mode switching
+- **Responsive Navigation**: Desktop top nav + mobile bottom nav
 
 ### User Experience
 
-- **Responsive Design**: Mobile-first approach with tablet and desktop optimizations
-- **Summer Theme**: Bright, cheerful colors with beach and trading icons
-- **Samurai Mascot**: Animated SVG samurai bot throughout the interface
-- **Infinite Scroll**: Smooth loading of historical orders
-- **Real-time Updates**: Live order status and price updates
+- **Cyber/Futuristic Theme**: Digital elements, cyberpunk/finance aesthetic, playful but professional copy
+- **Responsive Design**: Mobile-first, 3 breakpoints (mobile, tablet, desktop)
+- **Dark/Light Mode**: Toggle support, persistent preference
+- **Consistent Theming**: All components use Tailwind classes and respect theme
 
 ## 🛠️ Tech Stack
 
 - **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite
-- **Styling**: Tailwind CSS v4 (latest)
+- **Styling**: Tailwind CSS v4
 - **Routing**: React Router DOM
 - **State Management**: React Context + useReducer
 - **Icons**: Lucide React
-- **Development**: ESLint + TypeScript compiler
 
 ## 🚀 Getting Started
 
@@ -66,13 +65,12 @@ npm run dev
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
 
-## 🎨 Design System
+## 🎨 Theme & Design
 
 ### Color Palette
 
 - **Primary**: Dark Gray (`#1f2937`) and Pink (`#ec4899`)
-- **Summer Accents**: Yellow (`#fbbf24`), Ocean Blue (`#06b6d4`)
-- **Trading Colors**: Green (`#10b981`), Red (`#ef4444`)
+- **Accent**: Summer yellow (`#fbbf24`), ocean blue (`#06b6d4`), trading green (`#10b981`), trading red (`#ef4444`)
 
 ### Typography
 
@@ -89,30 +87,26 @@ npm run dev
 
 ### Home Page (`/`)
 
-- Hero section with samurai bot and summer messaging
-- Central swap form with token selection and amount inputs
-- Feature highlights and trading statistics
-- Real-time price calculation and slippage settings
+- Central swap form with token selection, amount input, slippage, and order type
+- Cyber gradient hero and digital copy
 
 ### Orders Page (`/orders`)
 
 - Infinite scroll list of all swap orders
-- Sortable by status (pending, completed, cancelled)
-- Action buttons for viewing details and cancelling orders
-- Mobile-optimized table view
+- Status filtering and action buttons
+- Mobile-optimized layout
 
 ### Order Details Page (`/orders/:orderId`)
 
-- Comprehensive transaction information
-- Status indicators and progress tracking
-- Copy-to-clipboard functionality for IDs
+- Detailed transaction information
+- Status indicators and transaction breakdown
 - Navigation back to orders list
 
 ## 🏗️ Architecture
 
 ### State Management
 
-- **AppContext**: Global state using React Context + useReducer
+- **AppContext**: Manages global state (orders, theme, user preferences, form state)
 - **Order Management**: Add, cancel, and update order statuses
 - **Theme Persistence**: Dark/light mode preferences
 
@@ -120,16 +114,11 @@ npm run dev
 
 ```
 src/
-├── components/
-│   ├── Layout.tsx          # Main layout with navigation
-│   └── SwapForm.tsx        # Token swap interface
-├── pages/
-│   ├── Home.tsx            # Landing page with swap form
-│   ├── Orders.tsx          # Orders list with infinite scroll
-│   └── OrderDetails.tsx    # Individual order information
-├── context/
-│   └── AppContext.tsx      # Global state management
-└── App.tsx                 # Root component with routing
+  components/      # Reusable UI components (SwapForm, Layout, etc.)
+  pages/           # Home, Orders, OrderDetails
+  context/         # AppContext for global state
+  utils/           # Formatting and helpers
+  App.tsx          # Root component with routing
 ```
 
 ## 🎯 Key Features Deep Dive
@@ -155,14 +144,6 @@ src/
 - Tailwind's dark mode with class strategy
 - Smooth transitions between themes
 - System preference detection
-
-## 🏖️ Summer Theme Elements
-
-- **Emojis**: 🏖️ ⚔️ 🌞 💰 🌴 throughout the interface
-- **Samurai Bot**: Custom SVG with sword and coin
-- **Vacation Vibes**: Beach-inspired color palette
-- **Trading Spirit**: Professional finance aesthetics
-- **Playful Copy**: "Trade with Honor", "Summer Trading Season"
 
 ## 🔧 Customization
 
@@ -208,15 +189,10 @@ The build creates optimized static files in the `dist/` directory.
 
 ## 🧪 Development
 
-### Code Style
-
 - TypeScript for type safety
 - Functional components with hooks
 - Tailwind for styling (minimal custom CSS)
 - ESLint for code quality
-
-### Best Practices
-
 - Mobile-first responsive design
 - Accessible components with proper ARIA labels
 - Performance optimized with lazy loading
@@ -230,14 +206,8 @@ The build creates optimized static files in the `dist/` directory.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
-- Summer vibes inspired by beach vacation aesthetics
-- Samurai culture for the honor-based trading philosophy
 - Modern DeFi protocols for swap functionality inspiration
 - React and Tailwind communities for excellent tooling
 

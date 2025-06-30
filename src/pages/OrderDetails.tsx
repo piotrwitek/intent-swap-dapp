@@ -7,7 +7,7 @@ import {
   Copy,
   ExternalLink,
 } from "lucide-react";
-import { useApp } from "../context/AppContext";
+import { useApp } from "../context/useApp";
 
 export default function OrderDetails() {
   const { orderId } = useParams<{ orderId: string }>();

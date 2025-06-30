@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowDownUp, Settings } from "lucide-react";
-import { useApp } from "../context/AppContext";
+import { useApp } from "../context/useApp";
 import type { SwapOrder } from "../context/AppContext";
 import { formatNumberDisplay } from "../utils/formatting";
 

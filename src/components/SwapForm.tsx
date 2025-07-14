@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowDownUp, Settings } from "lucide-react";
 import { useApp } from "../context/useApp";
-import type { SwapOrder } from "../context/AppContext";
+import type { SwapOrder } from "../context/AppProvider";
 import { formatNumberDisplay } from "../utils/formatting";
 
 const POPULAR_TOKENS = [

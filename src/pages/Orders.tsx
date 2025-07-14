@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Eye, X, Clock, Check, ArrowRight } from "lucide-react";
 import { useApp } from "../context/useApp";
-import type { SwapOrder } from "../context/AppContext";
+import type { SwapOrder } from "../context/AppProvider";
 
 // Mock data generator for infinite scroll
 const generateMockOrders = (startId: number, count: number): SwapOrder[] => {

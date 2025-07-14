@@ -89,7 +89,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
 
-            {/* Actions Section */}
+            {/* Toggle Theme Button */}
             <div className="flex items-center space-x-2">
               <button
                 onClick={toggleTheme}

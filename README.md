@@ -160,7 +160,7 @@ const POPULAR_TOKENS = [
 
 ### Modifying Colors
 
-Update the CSS custom properties in `src/index.css`:
+Update the CSS custom properties in `src/main.css`:
 
 ```css
 :root {

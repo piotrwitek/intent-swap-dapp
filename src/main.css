@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config '../tailwind.config.ts';
 
 /* Custom CSS variables for our summer/trading theme */
 :root {

@@ -8,7 +8,6 @@ export const accountKitConfig = createConfig(
     chain: base,
     storage: cookieStorage,
     ssr: false,
-    enablePopupOauth: true,
   },
   {
     auth: {

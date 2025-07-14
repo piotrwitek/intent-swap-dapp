@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { Eye, X, Clock, Check, ArrowRight } from "lucide-react";
 import { useApp } from "../context/useApp";
 import type { SwapOrder } from "../context/AppProvider";

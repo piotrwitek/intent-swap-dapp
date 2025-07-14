@@ -1,11 +1,11 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useRouter } from "@tanstack/react-router";
 import { Moon, Sun, Home, List, Zap } from "lucide-react";
 import { useApp } from "../context/useApp";
 import LoginButton from "./LoginButton";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { state, dispatch } = useApp();
-  const location = useLocation();
+  const location = useRouter().state.location;
 
   const toggleTheme = () => {
     dispatch({ type: "TOGGLE_THEME" });

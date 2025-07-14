@@ -1,12 +1,12 @@
 import { AppProvider } from "./context/AppProvider";
-import Router from "./Router";
 import { Providers } from "./providers";
+import TanStackRouter from "./TanStackRouter";
 
 function App() {
   return (
     <Providers>
       <AppProvider>
-        <Router />
+        <TanStackRouter />
       </AppProvider>
     </Providers>
   );

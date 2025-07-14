@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   ArrowLeft,
   Clock,
@@ -10,7 +10,10 @@ import {
 import { useApp } from "../context/useApp";
 
 export default function OrderDetails() {
-  const { orderId } = useParams<{ orderId: string }>();
+  // TanStack Router: useParams must be called with the route object
+  const router = useRouter();
+  const params = useParams({ from: router });
+  const orderId = params.orderId;
   const { state } = useApp();
   const navigate = useNavigate();
 
@@ -37,7 +40,7 @@ export default function OrderDetails() {
             blocks, just pure digital mystery.
           </p>
           <button
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate({ to: "/orders" })}
             className="bg-gradient-to-r from-pink-500 to-orange-400 text-white px-6 py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-orange-500 transition-all"
           >
             Return to Orders
@@ -111,7 +114,7 @@ export default function OrderDetails() {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <button
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate({ to: "/orders" })}
             className={`p-2 rounded-lg transition-colors ${
               state.theme === "dark"
                 ? "text-gray-400 hover:text-white hover:bg-gray-800"
@@ -289,7 +292,7 @@ export default function OrderDetails() {
         {/* Actions */}
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
           <button
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate({ to: "/orders" })}
             className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-colors ${
               state.theme === "dark"
                 ? "bg-gray-700 text-white hover:bg-gray-600"
@@ -300,7 +303,7 @@ export default function OrderDetails() {
           </button>
 
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate({ to: "/" })}
             className="flex-1 py-3 px-6 rounded-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all"
           >
             Create New Swap

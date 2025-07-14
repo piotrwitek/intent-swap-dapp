@@ -41,7 +41,7 @@ A modern React + TypeScript trading widget with a cyber/futuristic theme and dig
 
 ```bash
 git clone <repository-url>
-cd sdk-swap-widget
+cd intentswap-widget
 ```
 
 2. Install dependencies:

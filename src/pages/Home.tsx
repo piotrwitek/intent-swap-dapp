@@ -30,8 +30,12 @@ export default function Home() {
                 state.theme === "dark" ? "text-gray-300" : "text-gray-600"
               }`}
             >
-              <p className="text-2xl  mb-4">Your shield against MEV.</p>
-              <i>In the intent realm, your slippage can't be exploited.</i>
+              <span className="text-2xl mb-4 block">
+                Your shield against MEV.
+              </span>
+              <span className="italic">
+                In the intent realm, your slippage can't be exploited.
+              </span>
             </p>
           </div>
         </div>

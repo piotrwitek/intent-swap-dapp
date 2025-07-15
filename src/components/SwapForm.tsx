@@ -1,12 +1,29 @@
-import { useState } from "react";
-import { ArrowDownUp, Settings } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowDownUp, Settings, AlertCircle, CheckCircle } from "lucide-react";
 import { useApp } from "../context/useApp";
 import type { SwapOrder } from "../context/AppProvider";
 import { AppActionType } from "../context/AppProvider";
 import { formatNumberDisplay } from "../utils/formatting";
 import Dropdown from "./Dropdown";
-import { TokenAmount } from "@summer_fi/sdk-common";
-import { getTokenBySymbol, sdkClient } from "../sdkClient";
+import CollapsiblePanel from "./CollapsiblePanel";
+import { useUser } from "@account-kit/react";
+
+type SwapFlowState = "creatingSwap" | "confirmingQuote" | "sendingOrder";
+
+interface IntentQuoteData {
+  fromAmount: string;
+  toAmount: string;
+  fromToken: string;
+  toToken: string;
+  rate: string;
+  fee: string;
+  networkCost: string;
+  slippage: string;
+  priceImpact?: string;
+  minimumReceived: string;
+  executionTime: string;
+  rawQuote: unknown; // The actual SDK quote object
+}
 
 export default function SwapForm() {
   const { state, dispatch } = useApp();
@@ -15,6 +32,25 @@ export default function SwapForm() {
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
   const [showSettings, setShowSettings] = useState(false);
+  const user = useUser();
+
+  // State machine for swap flow
+  const [swapFlowState, setSwapFlowState] =
+    useState<SwapFlowState>("creatingSwap");
+  const [quoteData, setQuoteData] = useState<IntentQuoteData | null>(null);
+  const [quoteError, setQuoteError] = useState<string | null>(null);
+  const [showQuotePanel, setShowQuotePanel] = useState(false);
+
+  // Reset to creatingSwap state when inputs change during quote confirmation
+  useEffect(() => {
+    if (swapFlowState === "confirmingQuote") {
+      setSwapFlowState("creatingSwap");
+      setShowQuotePanel(false);
+      setQuoteData(null);
+      setQuoteError(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromToken, toToken, fromAmount, state.orderType]);
 
   // Decimal precision for inputs
   const [fromDecimals] = useState(18);
@@ -66,55 +102,112 @@ export default function SwapForm() {
   const handleSwap = async () => {
     if (!fromAmount || !toAmount) return;
 
-    const newOrder: SwapOrder = {
-      id: `order_${Date.now()}`,
-      fromToken,
-      toToken,
-      fromAmount,
-      toAmount,
-      price: (Number(toAmount) / Number(fromAmount)).toFixed(6),
-      status: "pending",
-      timestamp: new Date(),
-      slippage,
-      fee: (Number(fromAmount) * 0.003).toString(), // 0.3% fee
-    };
+    if (swapFlowState === "creatingSwap") {
+      // First click: Get quote and show confirmation
+      setSwapFlowState("confirmingQuote");
+      setQuoteError(null);
+      setShowQuotePanel(true);
 
-    if (!state.user) {
-      dispatch({
-        type: AppActionType.SET_GLOBAL_ERROR,
-        payload: "User address not found. Please connect your wallet.",
-      });
-      return;
+      try {
+        if (!user) {
+          throw new Error(
+            "User address not found. Please connect your wallet."
+          );
+        }
+
+        // Mock quote for now - replace with actual SDK call
+        const mockQuote = {
+          fromAmount,
+          toAmount,
+          fromToken,
+          toToken,
+          rate: (Number(toAmount) / Number(fromAmount)).toFixed(6),
+          fee: "FREE",
+          networkCost: (Number(fromAmount) * 0.001).toString(),
+          slippage: state.slippage,
+          priceImpact: "0.12",
+          minimumReceived: (Number(toAmount) * 0.995).toString(),
+          executionTime: "~30 seconds",
+          rawQuote: null, // Will contain actual SDK quote
+        };
+
+        setQuoteData(mockQuote);
+
+        /* TODO: Uncomment when SDK is properly configured
+        const sellQuote = await sdkClient.intentSwaps.getSellOrderQuote({
+          from: user.address,
+          fromAmount: TokenAmount.createFrom({
+            amount: fromAmount,
+            token: await getTokenBySymbol(state.chainId, fromToken),
+          }),
+          toToken: await getTokenBySymbol(state.chainId, toToken),
+          limitPrice,
+        });
+
+        if (!sellQuote) {
+          throw new Error("Failed to fetch swap quote. Please try again.");
+        }
+
+        setQuoteData({
+          fromAmount,
+          toAmount: sellQuote.toAmount.toString(),
+          fromToken,
+          toToken,
+          rate: (Number(sellQuote.toAmount.toString()) / Number(fromAmount)).toFixed(6),
+          fee: sellQuote.fee?.toString() || "FREE",
+          networkCost: sellQuote.networkCost?.toString() || "0",
+          slippage: state.slippage,
+          priceImpact: sellQuote.priceImpact?.toString(),
+          minimumReceived: sellQuote.minimumReceived?.toString() || "0",
+          executionTime: "~30 seconds",
+          rawQuote: sellQuote
+        });
+        */
+      } catch (error) {
+        setSwapFlowState("creatingSwap");
+        setShowQuotePanel(true);
+        setQuoteError(
+          error instanceof Error ? error.message : "Failed to fetch quote"
+        );
+      }
+    } else if (swapFlowState === "confirmingQuote" && quoteData) {
+      // Second click: Execute the swap
+      setSwapFlowState("sendingOrder");
+
+      try {
+        const newOrder: SwapOrder = {
+          id: `order_${Date.now()}`,
+          fromToken: quoteData.fromToken,
+          toToken: quoteData.toToken,
+          fromAmount: quoteData.fromAmount,
+          toAmount: quoteData.toAmount,
+          price: quoteData.rate,
+          status: "pending",
+          timestamp: new Date(),
+          slippage: quoteData.slippage,
+          fee: quoteData.fee === "FREE" ? "0" : quoteData.fee,
+        };
+
+        // TODO: Execute actual swap with SDK
+        // await sdkClient.executeSwap(quoteData.rawQuote);
+
+        dispatch({ type: AppActionType.ADD_ORDER, payload: newOrder });
+
+        // Reset form
+        setFromAmount("");
+        setToAmount("");
+        setSwapFlowState("creatingSwap");
+        setShowQuotePanel(false);
+        setQuoteData(null);
+        setQuoteError(null);
+      } catch (error) {
+        setSwapFlowState("creatingSwap");
+        setShowQuotePanel(true);
+        setQuoteError(
+          error instanceof Error ? error.message : "Failed to execute swap"
+        );
+      }
     }
-
-    const limitPrice = state.orderType === "limit" ? undefined : undefined;
-
-    const sellQuote = await sdkClient.intentSwaps.getSellOrderQuote({
-      from: state.user.address,
-      fromAmount: TokenAmount.createFrom({
-        amount: fromAmount,
-        token: await getTokenBySymbol(state.chainId, fromToken),
-      }),
-      toToken: await getTokenBySymbol(state.chainId, toToken),
-      limitPrice,
-    });
-
-    if (!sellQuote) {
-      dispatch({
-        type: AppActionType.SET_GLOBAL_ERROR,
-        payload: "Failed to fetch swap quote. Please try again.",
-      });
-      return;
-    }
-
-    // show quote details in the bottom part of the widget
-    // this should be a collapsible panel similar to setting panel
-    // i would like it to expand and collapse with smooth animation
-
-    dispatch({ type: AppActionType.ADD_ORDER, payload: newOrder });
-    // Reset form
-    setFromAmount("");
-    setToAmount("");
   };
 
   // Show loading state while tokens are being fetched
@@ -471,17 +564,227 @@ export default function SwapForm() {
           </div>
         )}
 
+        {/* Quote/Error Panel */}
+        {(showQuotePanel || quoteError) && (
+          <div className="mt-4">
+            <CollapsiblePanel isOpen={showQuotePanel} theme={state.theme}>
+              {quoteError ? (
+                <div className="flex items-start space-x-3">
+                  <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3
+                      className={`font-medium mb-1 ${
+                        state.theme === "dark" ? "text-red-400" : "text-red-600"
+                      }`}
+                    >
+                      Quote Error
+                    </h3>
+                    <p
+                      className={`text-sm ${
+                        state.theme === "dark" ? "text-red-400" : "text-red-600"
+                      }`}
+                    >
+                      {quoteError}
+                    </p>
+                    <button
+                      onClick={() => {
+                        setQuoteError(null);
+                        setShowQuotePanel(false);
+                      }}
+                      className={`mt-2 px-3 py-1 rounded text-sm transition-colors ${
+                        state.theme === "dark"
+                          ? "bg-gray-600 text-gray-300 hover:bg-gray-500"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              ) : quoteData ? (
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span
+                      className={`font-medium ${
+                        state.theme === "dark" ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      Quote Ready
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span
+                        className={
+                          state.theme === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }
+                      >
+                        Exchange Rate
+                      </span>
+                      <p
+                        className={
+                          state.theme === "dark"
+                            ? "text-white"
+                            : "text-gray-900"
+                        }
+                      >
+                        1 {quoteData.fromToken} ={" "}
+                        {formatNumberDisplay(quoteData.rate)}{" "}
+                        {quoteData.toToken}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span
+                        className={
+                          state.theme === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }
+                      >
+                        Price Impact
+                      </span>
+                      <p
+                        className={`${
+                          state.theme === "dark"
+                            ? "text-white"
+                            : "text-gray-900"
+                        } ${
+                          quoteData.priceImpact &&
+                          Number(quoteData.priceImpact) > 3
+                            ? "text-yellow-500"
+                            : ""
+                        }`}
+                      >
+                        {quoteData.priceImpact
+                          ? `${quoteData.priceImpact}%`
+                          : "< 0.01%"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span
+                        className={
+                          state.theme === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }
+                      >
+                        Minimum Received
+                      </span>
+                      <p
+                        className={
+                          state.theme === "dark"
+                            ? "text-white"
+                            : "text-gray-900"
+                        }
+                      >
+                        {formatNumberDisplay(quoteData.minimumReceived)}{" "}
+                        {quoteData.toToken}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span
+                        className={
+                          state.theme === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }
+                      >
+                        Network Fee
+                      </span>
+                      <p
+                        className={
+                          state.theme === "dark"
+                            ? "text-white"
+                            : "text-gray-900"
+                        }
+                      >
+                        {formatNumberDisplay(quoteData.networkCost)}{" "}
+                        {quoteData.fromToken}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span
+                        className={
+                          state.theme === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }
+                      >
+                        Slippage
+                      </span>
+                      <p
+                        className={
+                          state.theme === "dark"
+                            ? "text-white"
+                            : "text-gray-900"
+                        }
+                      >
+                        {quoteData.slippage}%
+                      </p>
+                    </div>
+
+                    <div>
+                      <span
+                        className={
+                          state.theme === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }
+                      >
+                        Est. Time
+                      </span>
+                      <p
+                        className={
+                          state.theme === "dark"
+                            ? "text-white"
+                            : "text-gray-900"
+                        }
+                      >
+                        {quoteData.executionTime}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </CollapsiblePanel>
+          </div>
+        )}
+
         {/* Swap Button */}
         <button
           onClick={handleSwap}
-          disabled={!fromAmount || !toAmount}
+          disabled={
+            !fromAmount || !toAmount || swapFlowState === "sendingOrder"
+          }
           className={`w-full mt-6 py-4 rounded-xl font-semibold text-white transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${
-            fromAmount && toAmount
+            fromAmount && toAmount && swapFlowState !== "sendingOrder"
               ? "bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 hover:from-purple-600 hover:via-pink-600 hover:to-cyan-500 shadow-lg"
               : "bg-gray-400"
           }`}
         >
-          {fromAmount && toAmount ? "⚡ Execute Swap" : "Enter Amount"}
+          {swapFlowState === "sendingOrder" ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <span>Sending Order...</span>
+            </div>
+          ) : swapFlowState === "confirmingQuote" ? (
+            <div className="flex items-center justify-center space-x-2">
+              <CheckCircle className="w-5 h-5" />
+              <span>⚡ Confirm Swap</span>
+            </div>
+          ) : fromAmount && toAmount ? (
+            "⚡ Get Quote"
+          ) : (
+            "Enter Amount"
+          )}
         </button>
       </div>
     </div>

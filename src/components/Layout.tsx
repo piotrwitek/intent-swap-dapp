@@ -1,14 +1,16 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { Moon, Sun, Home, List, Zap } from "lucide-react";
 import { useApp } from "../context/useApp";
+import { AppActionType } from "../context/AppProvider";
 import LoginButton from "./LoginButton";
+import ChainSelector from "./ChainSelector";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { state, dispatch } = useApp();
   const location = useRouter().state.location;
 
   const toggleTheme = () => {
-    dispatch({ type: "TOGGLE_THEME" });
+    dispatch({ type: AppActionType.TOGGLE_THEME });
     document.documentElement.classList.toggle("dark");
   };
 
@@ -84,6 +86,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center space-x-2">
               <LoginButton />
             </div>
+
+            {/* Chain Selector */}
+            <ChainSelector />
           </div>
         </nav>
       </header>

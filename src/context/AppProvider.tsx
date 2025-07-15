@@ -35,33 +35,38 @@ export interface AppState {
   supportedTokens: SupportedToken[];
   globalLoading: boolean;
   globalError: string | null;
+  chainId: number;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export enum AppActionType {
-  ADD_ORDER = "ADD_ORDER",
-  CANCEL_ORDER = "CANCEL_ORDER",
-  TOGGLE_THEME = "TOGGLE_THEME",
-  SET_ORDER_TYPE = "SET_ORDER_TYPE",
-  LOAD_MORE_ORDERS = "LOAD_MORE_ORDERS",
-  SET_SLIPPAGE = "SET_SLIPPAGE",
-  SET_USER = "SET_USER",
-  SET_SUPPORTED_TOKENS = "SET_SUPPORTED_TOKENS",
-  SET_GLOBAL_LOADING = "SET_GLOBAL_LOADING",
-  SET_GLOBAL_ERROR = "SET_GLOBAL_ERROR",
-}
+export const AppActionType = {
+  ADD_ORDER: "ADD_ORDER",
+  CANCEL_ORDER: "CANCEL_ORDER",
+  TOGGLE_THEME: "TOGGLE_THEME",
+  SET_ORDER_TYPE: "SET_ORDER_TYPE",
+  LOAD_MORE_ORDERS: "LOAD_MORE_ORDERS",
+  SET_SLIPPAGE: "SET_SLIPPAGE",
+  SET_USER: "SET_USER",
+  SET_SUPPORTED_TOKENS: "SET_SUPPORTED_TOKENS",
+  SET_GLOBAL_LOADING: "SET_GLOBAL_LOADING",
+  SET_GLOBAL_ERROR: "SET_GLOBAL_ERROR",
+  SET_CHAIN_ID: "SET_CHAIN_ID",
+} as const;
 
 export type AppAction =
-  | { type: AppActionType.ADD_ORDER; payload: SwapOrder }
-  | { type: AppActionType.CANCEL_ORDER; payload: string }
-  | { type: AppActionType.TOGGLE_THEME }
-  | { type: AppActionType.SET_ORDER_TYPE; payload: "swap" | "limit" }
-  | { type: AppActionType.LOAD_MORE_ORDERS; payload: SwapOrder[] }
-  | { type: AppActionType.SET_SLIPPAGE; payload: string }
-  | { type: AppActionType.SET_USER; payload: AppState["user"] }
-  | { type: AppActionType.SET_SUPPORTED_TOKENS; payload: SupportedToken[] }
-  | { type: AppActionType.SET_GLOBAL_LOADING; payload: boolean }
-  | { type: AppActionType.SET_GLOBAL_ERROR; payload: string };
+  | { type: typeof AppActionType.ADD_ORDER; payload: SwapOrder }
+  | { type: typeof AppActionType.CANCEL_ORDER; payload: string }
+  | { type: typeof AppActionType.TOGGLE_THEME }
+  | { type: typeof AppActionType.SET_ORDER_TYPE; payload: "swap" | "limit" }
+  | { type: typeof AppActionType.LOAD_MORE_ORDERS; payload: SwapOrder[] }
+  | { type: typeof AppActionType.SET_SLIPPAGE; payload: string }
+  | { type: typeof AppActionType.SET_USER; payload: AppState["user"] }
+  | {
+      type: typeof AppActionType.SET_SUPPORTED_TOKENS;
+      payload: SupportedToken[];
+    }
+  | { type: typeof AppActionType.SET_GLOBAL_LOADING; payload: boolean }
+  | { type: typeof AppActionType.SET_GLOBAL_ERROR; payload: string | null }
+  | { type: typeof AppActionType.SET_CHAIN_ID; payload: number };
 
 // Initial state
 const initialState: AppState = {
@@ -73,6 +78,7 @@ const initialState: AppState = {
   supportedTokens: [],
   globalLoading: false,
   globalError: null,
+  chainId: 8453, // Default to Base
 };
 
 // Reducer
@@ -136,6 +142,11 @@ function appReducer(state: AppState, action: AppAction): AppState {
         globalLoading: false,
         globalError: action.payload,
       };
+    case AppActionType.SET_CHAIN_ID:
+      return {
+        ...state,
+        chainId: action.payload,
+      };
     default:
       return state;
   }
@@ -181,8 +192,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       dispatch({ type: AppActionType.SET_GLOBAL_LOADING, payload: true });
 
       try {
-        const chainId = 1; // TODO: Replace with actual chain ID from your configuration
-        const chainInfo = getChainInfoByChainId(chainId);
+        const chainInfo = getChainInfoByChainId(state.chainId);
 
         const supportedTokens = await Promise.all(
           supportedTokenSymbols.map(async (symbol) => {
@@ -212,7 +222,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
 
     fetchTokens();
-  }, []);
+  }, [state.chainId]);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

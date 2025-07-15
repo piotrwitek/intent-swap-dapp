@@ -61,10 +61,7 @@ const router = createRouter({
 });
 
 export default function TanStackRouter() {
-  const user = useUser();
   const { state } = useApp();
-
-  console.log("User:", user);
 
   // Redirect to error page if there's a token fetch error
   useEffect(() => {

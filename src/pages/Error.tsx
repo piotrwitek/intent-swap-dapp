@@ -1,10 +1,13 @@
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { useApp } from "../context/useApp";
+import { AppActionType } from "../context/AppProvider";
 
 export default function Error() {
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
 
   const handleRetry = () => {
+    // Clear the global error
+    dispatch({ type: AppActionType.SET_GLOBAL_ERROR, payload: null });
     // Retry fetching tokens
     window.location.reload();
   };

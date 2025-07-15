@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Eye, X, Clock, Check, ArrowRight } from "lucide-react";
 import { useApp } from "../context/useApp";
 import type { SwapOrder } from "../context/AppProvider";
+import { AppActionType } from "../context/AppProvider";
 
 // Mock data generator for infinite scroll
 const generateMockOrders = (startId: number, count: number): SwapOrder[] => {
@@ -89,7 +90,7 @@ export default function Orders() {
   };
 
   const handleCancelOrder = (orderId: string) => {
-    dispatch({ type: "CANCEL_ORDER", payload: orderId });
+    dispatch({ type: AppActionType.CANCEL_ORDER, payload: orderId });
     setDisplayOrders((prev) =>
       prev.map((order) =>
         order.id === orderId

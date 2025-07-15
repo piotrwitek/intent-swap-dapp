@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowDownUp, Settings } from "lucide-react";
 import { useApp } from "../context/useApp";
 import type { SwapOrder } from "../context/AppProvider";
+import { AppActionType } from "../context/AppProvider";
 import { formatNumberDisplay } from "../utils/formatting";
 
 export default function SwapForm() {
@@ -18,7 +19,7 @@ export default function SwapForm() {
   // Use global slippage from context
   const slippage = state.slippage;
   const setSlippageGlobal = (value: string) =>
-    dispatch({ type: "SET_SLIPPAGE", payload: value });
+    dispatch({ type: AppActionType.SET_SLIPPAGE, payload: value });
 
   // Get supported tokens from global state
   const supportedTokens =
@@ -62,7 +63,7 @@ export default function SwapForm() {
       fee: (Number(fromAmount) * 0.003).toString(), // 0.3% fee
     };
 
-    dispatch({ type: "ADD_ORDER", payload: newOrder });
+    dispatch({ type: AppActionType.ADD_ORDER, payload: newOrder });
 
     // Reset form
     setFromAmount("");
@@ -118,7 +119,7 @@ export default function SwapForm() {
                   value={state.orderType}
                   onChange={(e) =>
                     dispatch({
-                      type: "SET_ORDER_TYPE",
+                      type: AppActionType.SET_ORDER_TYPE,
                       payload: e.target.value as "swap" | "limit",
                     })
                   }

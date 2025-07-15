@@ -4,6 +4,7 @@ import { useApp } from "../context/useApp";
 import type { SwapOrder } from "../context/AppProvider";
 import { AppActionType } from "../context/AppProvider";
 import { formatNumberDisplay } from "../utils/formatting";
+import Dropdown from "./Dropdown";
 
 export default function SwapForm() {
   const { state, dispatch } = useApp();
@@ -24,6 +25,19 @@ export default function SwapForm() {
   // Get supported tokens from global state
   const supportedTokens =
     state.supportedTokens.length > 0 ? state.supportedTokens : [];
+
+  // Convert supported tokens to dropdown options
+  const tokenOptions = supportedTokens.map((token) => ({
+    value: token.symbol,
+    label: token.symbol,
+    iconSrc: token.iconSrc,
+  }));
+
+  // Order type options
+  const orderTypeOptions = [
+    { value: "swap", label: "Swap", icon: "⚡" },
+    { value: "limit", label: "Limit", icon: "🎯" },
+  ];
 
   // Mock exchange rate calculation
   const calculateToAmount = (amount: string) => {
@@ -115,25 +129,23 @@ export default function SwapForm() {
             >
               {/* Order Type Dropdown */}
               <div className="flex items-center space-x-3">
-                <select
+                <Dropdown
+                  options={orderTypeOptions}
                   value={state.orderType}
-                  onChange={(e) =>
+                  onChange={(value) =>
                     dispatch({
                       type: AppActionType.SET_ORDER_TYPE,
-                      payload: e.target.value as "swap" | "limit",
+                      payload: value as "swap" | "limit",
                     })
                   }
-                  className={`bg-transparent border-none text-xl font-bold focus:outline-none cursor-pointer transition-colors rounded-lg px-2 py-1
-                  ${
+                  buttonClassName={`bg-transparent border-none text-xl font-bold px-2 py-1 ${
                     state.theme === "dark"
                       ? "text-pink-400 hover:bg-purple-900/40"
                       : "text-purple-700 hover:bg-purple-100"
                   }`}
-                  aria-label="Order type"
-                >
-                  <option value="swap">Swap</option>
-                  <option value="limit">Limit</option>
-                </select>
+                  menuClassName="min-w-[100px]"
+                  ariaLabel="Order type"
+                />
               </div>
             </h2>
           </div>
@@ -257,27 +269,14 @@ export default function SwapForm() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <select
+            <Dropdown
+              options={tokenOptions}
               value={fromToken}
-              onChange={(e) => setFromToken(e.target.value)}
-              className={`flex-shrink-0 bg-transparent border-none text-lg font-semibold focus:outline-none ${
-                state.theme === "dark" ? "text-white" : "text-gray-900"
-              }`}
-            >
-              {supportedTokens.map((token) => (
-                <option key={token.symbol} value={token.symbol}>
-                  {/* Render iconSrc as img if it's a string */}
-                  {typeof token.iconSrc === "string" && token.iconSrc ? (
-                    <img
-                      src={token.iconSrc}
-                      alt={token.symbol}
-                      className="inline-block w-5 h-5 mr-1 align-middle"
-                    />
-                  ) : null}
-                  {token.symbol}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => setFromToken(value as string)}
+              buttonClassName="bg-transparent border-none text-lg font-semibold px-0 py-0 hover:bg-transparent"
+              menuClassName="min-w-[120px]"
+              ariaLabel="Select from token"
+            />
 
             <input
               type="text"
@@ -355,27 +354,14 @@ export default function SwapForm() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <select
+            <Dropdown
+              options={tokenOptions}
               value={toToken}
-              onChange={(e) => setToToken(e.target.value)}
-              className={`flex-shrink-0 bg-transparent border-none text-lg font-semibold focus:outline-none ${
-                state.theme === "dark" ? "text-white" : "text-gray-900"
-              }`}
-            >
-              {supportedTokens.map((token) => (
-                <option key={token.symbol} value={token.symbol}>
-                  {/* Render icon as img if it's a string */}
-                  {typeof token.iconSrc === "string" && token.iconSrc ? (
-                    <img
-                      src={token.iconSrc}
-                      alt={token.symbol}
-                      className="inline-block w-5 h-5 mr-1 align-middle"
-                    />
-                  ) : null}
-                  {token.symbol}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => setToToken(value as string)}
+              buttonClassName="bg-transparent border-none text-lg font-semibold px-0 py-0 hover:bg-transparent"
+              menuClassName="min-w-[120px]"
+              ariaLabel="Select to token"
+            />
 
             <input
               type="text"

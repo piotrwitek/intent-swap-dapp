@@ -266,7 +266,14 @@ export default function SwapForm() {
             >
               {supportedTokens.map((token) => (
                 <option key={token.symbol} value={token.symbol}>
-                  {typeof token.icon === "string" ? token.icon : ""}{" "}
+                  {/* Render iconSrc as img if it's a string */}
+                  {typeof token.iconSrc === "string" && token.iconSrc ? (
+                    <img
+                      src={token.iconSrc}
+                      alt={token.symbol}
+                      className="inline-block w-5 h-5 mr-1 align-middle"
+                    />
+                  ) : null}
                   {token.symbol}
                 </option>
               ))}
@@ -357,7 +364,14 @@ export default function SwapForm() {
             >
               {supportedTokens.map((token) => (
                 <option key={token.symbol} value={token.symbol}>
-                  {typeof token.icon === "string" ? token.icon : ""}{" "}
+                  {/* Render icon as img if it's a string */}
+                  {typeof token.iconSrc === "string" && token.iconSrc ? (
+                    <img
+                      src={token.iconSrc}
+                      alt={token.symbol}
+                      className="inline-block w-5 h-5 mr-1 align-middle"
+                    />
+                  ) : null}
                   {token.symbol}
                 </option>
               ))}

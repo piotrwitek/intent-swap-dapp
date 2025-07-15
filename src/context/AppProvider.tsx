@@ -21,7 +21,7 @@ export interface SwapOrder {
 
 export interface SupportedToken {
   symbol: string;
-  icon: React.ReactNode;
+  iconSrc: string;
 }
 
 export interface AppState {
@@ -194,16 +194,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
       try {
         const chainInfo = getChainInfoByChainId(state.chainId);
 
-        const supportedTokens = await Promise.all(
+        const supportedTokensResults = await Promise.allSettled(
           supportedTokenSymbols.map(async (symbol) => {
             const chain = await sdkClient.chains.getChain({ chainInfo });
             const token = await chain.tokens.getTokenBySymbol({ symbol });
             return {
               symbol,
-              icon: <img src={token.icon} alt={symbol} className="w-5 h-5" />,
+              iconSrc: token.icon,
             };
           })
         );
+        const supportedTokens = supportedTokensResults
+          .filter(
+            (result): result is PromiseFulfilledResult<SupportedToken> =>
+              result.status === "fulfilled"
+          )
+          .map((result) => result.value);
 
         dispatch({
           type: AppActionType.SET_SUPPORTED_TOKENS,

@@ -8,9 +8,12 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Orders from "./pages/Orders";
 import OrderDetails from "./pages/OrderDetails";
+import Error from "./pages/Error";
 
 import { Outlet } from "@tanstack/react-router";
 import { useUser } from "@account-kit/react";
+import { useApp } from "./context/useApp";
+import { useEffect } from "react";
 
 const rootRoute = createRootRoute({
   component: function RootLayout() {
@@ -40,10 +43,17 @@ const orderDetailsRoute = createRoute({
   component: OrderDetails,
 });
 
+const errorRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/error",
+  component: Error,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   ordersRoute,
   orderDetailsRoute,
+  errorRoute,
 ]);
 
 const router = createRouter({
@@ -52,6 +62,16 @@ const router = createRouter({
 
 export default function TanStackRouter() {
   const user = useUser();
+  const { state } = useApp();
+
   console.log("User:", user);
+
+  // Redirect to error page if there's a token fetch error
+  useEffect(() => {
+    if (state.globalError && window.location.pathname !== "/error") {
+      window.location.href = "/error";
+    }
+  }, [state.globalError]);
+
   return <RouterProvider router={router} />;
 }

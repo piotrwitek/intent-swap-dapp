@@ -1,25 +1,8 @@
 import { useState } from "react";
 import { ArrowDownUp, Settings } from "lucide-react";
-import { getChainInfoByChainId } from "@summer_fi/sdk-common";
 import { useApp } from "../context/useApp";
 import type { SwapOrder } from "../context/AppProvider";
 import { formatNumberDisplay } from "../utils/formatting";
-import { sdkClient } from "../sdkCilent";
-
-const supportedTokenSymbols = ["ETH", "WSTETH", "WBTC", "USDC", "USDT", "DAI"];
-
-const chainInfo = getChainInfoByChainId(chainId);
-
-const supportedTokens = await Promise.all(
-  supportedTokenSymbols.map(async (symbol) => {
-    const chain = await sdkClient.chains.getChain({ chainInfo });
-    const token = await chain.tokens.getTokenBySymbol({ symbol });
-    return {
-      symbol,
-      icon: <img src={token.icon} alt={symbol} className="w-5 h-5" />,
-    };
-  })
-);
 
 export default function SwapForm() {
   const { state, dispatch } = useApp();
@@ -30,13 +13,16 @@ export default function SwapForm() {
   const [showSettings, setShowSettings] = useState(false);
 
   // Decimal precision for inputs
-  const [fromDecimals, setFromDecimals] = useState(18);
-  const [toDecimals, setToDecimals] = useState(18);
+  const [fromDecimals] = useState(18);
 
   // Use global slippage from context
   const slippage = state.slippage;
   const setSlippageGlobal = (value: string) =>
     dispatch({ type: "SET_SLIPPAGE", payload: value });
+
+  // Get supported tokens from global state
+  const supportedTokens =
+    state.supportedTokens.length > 0 ? state.supportedTokens : [];
 
   // Mock exchange rate calculation
   const calculateToAmount = (amount: string) => {
@@ -82,6 +68,32 @@ export default function SwapForm() {
     setFromAmount("");
     setToAmount("");
   };
+
+  // Show loading state while tokens are being fetched
+  if (state.globalLoading) {
+    return (
+      <div className="max-w-md mx-auto">
+        <div
+          className={`rounded-2xl p-6 shadow-xl backdrop-blur-md border transition-colors ${
+            state.theme === "dark"
+              ? "bg-gray-800/50 border-purple-500/20"
+              : "bg-white/70 border-purple-200"
+          }`}
+        >
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-4"></div>
+            <p
+              className={`text-sm ${
+                state.theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
+              Loading trading tokens...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-md mx-auto">
@@ -253,7 +265,8 @@ export default function SwapForm() {
             >
               {supportedTokens.map((token) => (
                 <option key={token.symbol} value={token.symbol}>
-                  {token.icon} {token.symbol}
+                  {typeof token.icon === "string" ? token.icon : ""}{" "}
+                  {token.symbol}
                 </option>
               ))}
             </select>
@@ -343,7 +356,8 @@ export default function SwapForm() {
             >
               {supportedTokens.map((token) => (
                 <option key={token.symbol} value={token.symbol}>
-                  {token.icon} {token.symbol}
+                  {typeof token.icon === "string" ? token.icon : ""}{" "}
+                  {token.symbol}
                 </option>
               ))}
             </select>

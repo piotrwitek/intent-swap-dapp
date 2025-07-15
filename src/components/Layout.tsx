@@ -125,7 +125,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {/* Theme Toggle Button (desktop only) */}
                 <button
                   onClick={toggleTheme}
-                  className={`hidden md:inline-flex p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500/70 ${
+                  className={`hidden md:inline-flex p-2 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-pink-500/70 ${
                     state.theme === "dark"
                       ? "text-yellow-300 hover:bg-gray-800"
                       : "text-orange-500 hover:bg-gray-100"

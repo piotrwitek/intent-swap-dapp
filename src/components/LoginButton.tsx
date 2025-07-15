@@ -28,10 +28,10 @@ export default function LoginButton() {
         </span>
         <button
           onClick={() => logout()}
-          className={`p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500/70 flex items-center gap-1 text-xs font-semibold ${
+          className={`p-2 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-pink-500/70 flex items-center gap-1 text-xs font-semibold ${
             state.theme === "dark"
-              ? "text-pink-300 hover:bg-gray-800"
-              : "text-pink-600 hover:bg-gray-100"
+              ? "text-gray-300 hover:text-white hover:bg-gray-800"
+              : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
           }`}
           aria-label="Log out"
         >

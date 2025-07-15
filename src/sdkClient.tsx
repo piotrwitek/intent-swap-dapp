@@ -1,7 +1,4 @@
 import { makeSDK } from "@summer_fi/sdk-client";
-import { configDotenv } from "dotenv";
-
-configDotenv();
 
 const SDK_API_URL = process.env.SDK_API_URL;
 if (!SDK_API_URL) {

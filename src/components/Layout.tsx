@@ -84,11 +84,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             {/* LoginButton */}
             <div className="flex items-center space-x-2">
+              {/* Chain Selector */}
+              <ChainSelector />
               <LoginButton />
             </div>
-
-            {/* Chain Selector */}
-            <ChainSelector />
           </div>
         </nav>
       </header>

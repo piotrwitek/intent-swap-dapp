@@ -9,3 +9,8 @@ export const sdkClient = makeSDK({
   apiDomainUrl: SDK_API_URL,
   logging: process.env.NODE_ENV === "development",
 });
+
+export const getTokenBySymbol = async (chainId: number, symbol: string) => {
+  const chain = await sdkClient.chains.getChainById({ chainId });
+  return chain.tokens.getTokenBySymbol({ symbol });
+};

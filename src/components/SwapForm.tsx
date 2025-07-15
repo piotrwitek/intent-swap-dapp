@@ -5,6 +5,8 @@ import type { SwapOrder } from "../context/AppProvider";
 import { AppActionType } from "../context/AppProvider";
 import { formatNumberDisplay } from "../utils/formatting";
 import Dropdown from "./Dropdown";
+import { TokenAmount } from "@summer_fi/sdk-common";
+import { getTokenBySymbol, sdkClient } from "../sdkClient";
 
 export default function SwapForm() {
   const { state, dispatch } = useApp();
@@ -61,7 +63,7 @@ export default function SwapForm() {
     setToAmount(fromAmount);
   };
 
-  const handleSwap = () => {
+  const handleSwap = async () => {
     if (!fromAmount || !toAmount) return;
 
     const newOrder: SwapOrder = {
@@ -77,8 +79,39 @@ export default function SwapForm() {
       fee: (Number(fromAmount) * 0.003).toString(), // 0.3% fee
     };
 
-    dispatch({ type: AppActionType.ADD_ORDER, payload: newOrder });
+    if (!state.user) {
+      dispatch({
+        type: AppActionType.SET_GLOBAL_ERROR,
+        payload: "User address not found. Please connect your wallet.",
+      });
+      return;
+    }
 
+    const limitPrice = state.orderType === "limit" ? undefined : undefined;
+
+    const sellQuote = await sdkClient.intentSwaps.getSellOrderQuote({
+      from: state.user.address,
+      fromAmount: TokenAmount.createFrom({
+        amount: fromAmount,
+        token: await getTokenBySymbol(state.chainId, fromToken),
+      }),
+      toToken: await getTokenBySymbol(state.chainId, toToken),
+      limitPrice,
+    });
+
+    if (!sellQuote) {
+      dispatch({
+        type: AppActionType.SET_GLOBAL_ERROR,
+        payload: "Failed to fetch swap quote. Please try again.",
+      });
+      return;
+    }
+
+    // show quote details in the bottom part of the widget
+    // this should be a collapsible panel similar to setting panel
+    // i would like it to expand and collapse with smooth animation
+
+    dispatch({ type: AppActionType.ADD_ORDER, payload: newOrder });
     // Reset form
     setFromAmount("");
     setToAmount("");

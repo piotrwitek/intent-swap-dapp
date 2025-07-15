@@ -75,12 +75,6 @@ export default function Dropdown({
                   alt={selectedOption.label}
                   className="w-5 h-5 rounded-full"
                 />
-              ) : typeof selectedOption?.icon === "string" ? (
-                <img
-                  src={selectedOption.icon}
-                  alt={selectedOption.label}
-                  className="w-5 h-5 rounded-full"
-                />
               ) : (
                 selectedOption?.icon
               )}

@@ -1,17 +1,25 @@
 import { useState } from "react";
 import { ArrowDownUp, Settings } from "lucide-react";
+import { getChainInfoByChainId } from "@summer_fi/sdk-common";
 import { useApp } from "../context/useApp";
 import type { SwapOrder } from "../context/AppProvider";
 import { formatNumberDisplay } from "../utils/formatting";
+import { sdkClient } from "../sdkCilent";
 
-const POPULAR_TOKENS = [
-  { symbol: "ETH", name: "Ethereum", icon: "⟠" },
-  { symbol: "BTC", name: "Bitcoin", icon: "₿" },
-  { symbol: "USDC", name: "USD Coin", icon: "💵" },
-  { symbol: "USDT", name: "Tether", icon: "🪙" },
-  { symbol: "SOL", name: "Solana", icon: "◎" },
-  { symbol: "MATIC", name: "Polygon", icon: "🔷" },
-];
+const supportedTokenSymbols = ["ETH", "WSTETH", "WBTC", "USDC", "USDT", "DAI"];
+
+const chainInfo = getChainInfoByChainId(chainId);
+
+const supportedTokens = await Promise.all(
+  supportedTokenSymbols.map(async (symbol) => {
+    const chain = await sdkClient.chains.getChain({ chainInfo });
+    const token = await chain.tokens.getTokenBySymbol({ symbol });
+    return {
+      symbol,
+      icon: <img src={token.icon} alt={symbol} className="w-5 h-5" />,
+    };
+  })
+);
 
 export default function SwapForm() {
   const { state, dispatch } = useApp();
@@ -243,7 +251,7 @@ export default function SwapForm() {
                 state.theme === "dark" ? "text-white" : "text-gray-900"
               }`}
             >
-              {POPULAR_TOKENS.map((token) => (
+              {supportedTokens.map((token) => (
                 <option key={token.symbol} value={token.symbol}>
                   {token.icon} {token.symbol}
                 </option>
@@ -333,7 +341,7 @@ export default function SwapForm() {
                 state.theme === "dark" ? "text-white" : "text-gray-900"
               }`}
             >
-              {POPULAR_TOKENS.map((token) => (
+              {supportedTokens.map((token) => (
                 <option key={token.symbol} value={token.symbol}>
                   {token.icon} {token.symbol}
                 </option>
